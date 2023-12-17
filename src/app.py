@@ -67,7 +67,7 @@ with tab_specs:
         genai.configure(api_key=st.secrets["GEMINI_API_KEY"])
         model = genai.GenerativeModel('gemini-pro')
         response = model.generate_content(question)
-        st.success(response)
+        st.success(response.text)
 
 
 
