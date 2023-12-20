@@ -102,7 +102,8 @@ def main():
 
             if 'summary' not in st.session_state or st.session_state.summary is None:
                 try:
-                    st.session_state.summary = chain.run(input_documents=docs, question=pdf_summary)    
+                    st.session_state.summary = chain.run(input_documents=docs, question=pdf_summary)
+                    st.write(st.session_state.summary)    
                 except Exception as maxtoken_error:
                     # Fallback to the larger model if the context length is exceeded
                     print(maxtoken_error)
