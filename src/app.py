@@ -6,28 +6,27 @@ import google.generativeai as genai
 
 
 # Configure Streamlit page and state
-st.set_page_config(page_title="GemiMe", page_icon="🎡")
+st.set_page_config(page_title="GemiMe", page_icon="👨‍💼")
 
 # set default session variables
 if "tweet" not in st.session_state:
     st.session_state.tweet = ""
 
 #Rendering main page
-st.title("🎡 GemiMe")
+st.title("👨‍💼 GemiMe")
 
 
 
 with st.sidebar:
     with st.form("config"):
         st.header("Configuration")
-        selection = st.radio("Select", ['OpenAI', 'Gemini'])
+        selection = st.radio("Select", ['debug', 'prod'])
         st.divider()
-        openai_api_key = st.text_input("Your OpenAI API key", placeholder="sk-xxxx", type="password")
         gemini_api_key = st.text_input("Your Gemini API key", placeholder="sk-xxxx", type="password") 
 
         model_openai = st.selectbox(
             "OpenAI", 
-            options=("gpt-3.5-turbo", "gpt-4", "gpt-3.5-turbo-16k", "gpt-4-16k"),
+            options=("gpt-3.5-turbo"),
             index=1,
         )
         model_gemini = st.selectbox(
@@ -43,7 +42,7 @@ with st.sidebar:
             else:
                 model=model_gemini
             st.session_state.model_config = {
-                "openai_api_key": openai_api_key,
+                "gemini_api_key": gemini_api_key,
                 "model": model,
                 "temperature": temperature,
                 "max_retries": max_retries,
@@ -63,8 +62,10 @@ with tab_specs:
         submit_button = st.form_submit_button(label="Submit", disabled="model_config" not in st.session_state)
 
     if submit_button:
-        #genai.configure(api_key=os.getenv('GEMINI_API_KEY'))
-        genai.configure(api_key=st.secrets["GEMINI_API_KEY"])
+        if (st.session_state["selection"]=="prod" ): 
+            genai.configure(api_key=st.session_state["gemini_api_key"])
+        else:
+            genai.configure(api_key=st.secrets["GEMINI_API_KEY"])
         model = genai.GenerativeModel('gemini-pro')
         response = model.generate_content(question)
         st.success(response.text)
