@@ -71,27 +71,29 @@ def main():
         st.write(intro)
         uploaded_file=load_project_specification()
 
-        # create llm
-        #llm = OpenAI(temperature=0.7, model=st.session_state.model)
+        
+
+            # create llm
+            #llm = OpenAI(temperature=0.7, model=st.session_state.model)
         llm = GoogleGenerativeAI(model="gemini-pro", google_api_key=st.secrets["GEMINI_API_KEY"])
         chain = load_summarize_chain(llm, chain_type="stuff")
 
         text = ""
+        if uploaded_file is not None:
+            text = extract_text(uploaded_file)
 
-        text = extract_text(uploaded_file)
-
-        # Split text into chunks
-        text_splitter = RecursiveCharacterTextSplitter(
+            # Split text into chunks
+            text_splitter = RecursiveCharacterTextSplitter(
                 chunk_size=1000,
                 chunk_overlap=200,
                 length_function=len
             )
-        chunks = text_splitter.split_text(text)
+            chunks = text_splitter.split_text(text)
         
-        # Create embeddings
-        #embeddings = OpenAIEmbeddings(disallowed_special=())
-        embeddings = GoogleGenerativeAIEmbeddings(model="models/embedding-001")
-        knowledge_base = FAISS.from_texts(chunks, embeddings)
+            # Create embeddings
+            #embeddings = OpenAIEmbeddings(disallowed_special=())
+            embeddings = GoogleGenerativeAIEmbeddings(model="models/embedding-001")
+            knowledge_base = FAISS.from_texts(chunks, embeddings)
 
 if __name__ == "__main__":
     main()
