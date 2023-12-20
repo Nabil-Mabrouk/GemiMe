@@ -70,13 +70,10 @@ def main():
         intro='''Load the specification file of the project. This file can be in pdf or docx format. You can also use one of our examples demo specifciation files below'''
         st.write(intro)
         uploaded_file=load_project_specification()
-
-        
-
-            # create llm
-            #llm = OpenAI(temperature=0.7, model=st.session_state.model)
-        llm = GoogleGenerativeAI(model="gemini-pro", google_api_key=st.secrets["GEMINI_API_KEY"])
-        chain = load_summarize_chain(llm, chain_type="stuff")
+        # create llm
+        #llm = OpenAI(temperature=0.7, model=st.session_state.model)
+        #llm = GoogleGenerativeAI(model="gemini-pro", google_api_key=st.secrets["GEMINI_API_KEY"])
+        #chain = load_summarize_chain(llm, chain_type="stuff")
 
         text = ""
         if uploaded_file is not None:
