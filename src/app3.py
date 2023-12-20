@@ -67,17 +67,24 @@ def main():
         st.write(intro)
 
     with tab_specs:
+        st.write("### Step 1: Loading specification file")
         intro='''Load the specification file of the project. This file can be in pdf or docx format. You can also use one of our examples demo specifciation files below'''
         st.write(intro)
-        uploaded_file=load_project_specification()
+        uploaded_file = st.file_uploader("Upload Project Specification", type=["pdf", "docx"])
         # create llm
         #llm = OpenAI(temperature=0.7, model=st.session_state.model)
-        #llm = GoogleGenerativeAI(model="gemini-pro", google_api_key=st.secrets["GEMINI_API_KEY"])
-        #chain = load_summarize_chain(llm, chain_type="stuff")
-
+        llm = GoogleGenerativeAI(model="gemini-pro", google_api_key=st.secrets["GEMINI_API_KEY"])
+        chain = load_summarize_chain(llm, chain_type="stuff")
         text = ""
+        pdf_summary = "Give me a concise summary, use the language that the file is in. "
         if uploaded_file is not None:
             text = extract_text(uploaded_file)
+
+            # Clear summary if a new file is uploaded
+            if 'summary' in st.session_state and st.session_state.file_name != uploaded_file.name:
+                st.session_state.summary = None
+
+            st.session_state.file_name = uploaded_file.name
 
             # Split text into chunks
             text_splitter = RecursiveCharacterTextSplitter(
@@ -91,6 +98,14 @@ def main():
             #embeddings = OpenAIEmbeddings(disallowed_special=())
             embeddings = GoogleGenerativeAIEmbeddings(model="models/embedding-001", google_api_key=st.secrets["GEMINI_API_KEY"])
             knowledge_base = FAISS.from_texts(chunks, embeddings)
+            docs = knowledge_base.similarity_search(pdf_summary)
+
+            if 'summary' not in st.session_state or st.session_state.summary is None:
+                try:
+                    st.session_state.summary = chain.run(input_documents=docs, question=pdf_summary)    
+                except Exception as maxtoken_error:
+                    # Fallback to the larger model if the context length is exceeded
+                    print(maxtoken_error)
 
 if __name__ == "__main__":
     main()
