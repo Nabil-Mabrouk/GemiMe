@@ -89,7 +89,7 @@ def main():
         
             # Create embeddings
             #embeddings = OpenAIEmbeddings(disallowed_special=())
-            embeddings = GoogleGenerativeAIEmbeddings(model="models/embedding-001")
+            embeddings = GoogleGenerativeAIEmbeddings(model="models/embedding-001", google_api_key=st.secrets["GEMINI_API_KEY"])
             knowledge_base = FAISS.from_texts(chunks, embeddings)
 
 if __name__ == "__main__":
