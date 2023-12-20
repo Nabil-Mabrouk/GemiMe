@@ -70,7 +70,6 @@ def main():
         intro='''Load the specification file of the project. This file can be in pdf or docx format. You can also use one of our examples demo specifciation files below'''
         st.write(intro)
         uploaded_file=load_project_specification()
-        file_type=uploaded_file.type
 
         # create llm
         #llm = OpenAI(temperature=0.7, model=st.session_state.model)
@@ -78,8 +77,8 @@ def main():
         chain = load_summarize_chain(llm, chain_type="stuff")
 
         text = ""
-        if file_type == "application/pdf":
-             text = extract_text(uploaded_file)
+
+        text = extract_text(uploaded_file)
 
         # Split text into chunks
         text_splitter = RecursiveCharacterTextSplitter(
