@@ -77,12 +77,14 @@ def main():
         chain = load_summarize_chain(llm, chain_type="stuff")
         text = ""
         pdf_summary = "Give me a concise summary, use the language that the file is in. "
+        pdf_title="Extract the title"
         if uploaded_file is not None:
             text = extract_text(uploaded_file)
 
             # Clear summary if a new file is uploaded
             if 'summary' in st.session_state and st.session_state.file_name != uploaded_file.name:
                 st.session_state.summary = None
+                st.session_state.title = None
 
             st.session_state.file_name = uploaded_file.name
 
@@ -99,10 +101,13 @@ def main():
             embeddings = GoogleGenerativeAIEmbeddings(model="models/embedding-001", google_api_key=st.secrets["GEMINI_API_KEY"])
             knowledge_base = FAISS.from_texts(chunks, embeddings)
             docs = knowledge_base.similarity_search(pdf_summary)
+            title=knowledge_base.similarity_search(pdf_title)
 
             if 'summary' not in st.session_state or st.session_state.summary is None:
                 try:
                     st.session_state.summary = chain.run(input_documents=docs, question=pdf_summary)
+                    st.session_state.title = chain.run(input_documents=title, question=pdf_title)
+                    st.info(st.session_state.title)
                     st.write(st.session_state.summary)    
                 except Exception as maxtoken_error:
                     # Fallback to the larger model if the context length is exceeded
