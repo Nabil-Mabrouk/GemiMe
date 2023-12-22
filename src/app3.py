@@ -109,18 +109,26 @@ def main():
             #embeddings = OpenAIEmbeddings(disallowed_special=())
             embeddings = GoogleGenerativeAIEmbeddings(model="models/embedding-001", google_api_key=st.secrets["GEMINI_API_KEY"])
             knowledge_base = FAISS.from_texts(chunks, embeddings)
-            docs = knowledge_base.similarity_search(pdf_summary)
-            title=knowledge_base.similarity_search(pdf_title)
+            with st.form("Chat with specifications"):
+                st.header("Aska question about the document that you uploaded")
+                question=st.text_input("Enter your question:")
+                submit_button = st.form_submit_button(label="Submit")
 
-            if 'summary' not in st.session_state or st.session_state.summary is None:
-                try:
-                    st.session_state.summary = chain.run(input_documents=docs, question=pdf_summary)
-                    st.session_state.title = chain.run(input_documents=title, question=pdf_title)
-                    st.info(st.session_state.title)
-                    st.write(st.session_state.summary)    
-                except Exception as maxtoken_error:
-                    # Fallback to the larger model if the context length is exceeded
-                    print(maxtoken_error)
+                if submit_button:
+                    docs = knowledge_base.similarity_search(question)
+                    llm_response=chain.run(input_documents=docs, question=question)
+                    st.markdown(llm_response)
+
+
+
+            #if 'summary' not in st.session_state or st.session_state.summary is None:
+            #    try:
+            #        st.session_state.summary = chain.run(input_documents=docs, question=pdf_summary)
+            #        st.info(st.session_state.title)
+            #        st.write(st.session_state.summary)    
+            #    except Exception as maxtoken_error:
+            #        # Fallback to the larger model if the context length is exceeded
+            #        print(maxtoken_error)
     with tab_design:
         st.write("Hello")
         llm = GoogleGenerativeAI(model="gemini-pro", google_api_key=st.secrets["GEMINI_API_KEY"])
@@ -141,6 +149,9 @@ def main():
             if submit_button:
                 llm_response = chain(question)
                 st.markdown(llm_response['text'])
+    with tab_cost:
+        st.info("Hello")
+
 
         
 if __name__ == "__main__":
