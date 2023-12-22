@@ -131,7 +131,7 @@ def main():
                 input_variables=["prompt"],
                 )
             )
-        chat_prompt_template = ChatPromptTemplate.from_message([full_prompt])
+        chat_prompt_template = ChatPromptTemplate.from_messages([full_prompt])
         chain = LLMChain(llm=llm, prompt=chat_prompt_template, verbose=True)
         with st.form("Test Form"):
             st.header("Project info")
