@@ -136,11 +136,11 @@ def main():
         with st.form("Test Form"):
             st.header("Project info")
             question=st.text_input("Enter your question:")
-            submit_button = st.form_submit_button(label="Submit", disabled="model_config" not in st.session_state)
+            submit_button = st.form_submit_button(label="Submit")
 
             if submit_button:
                 llm_response = chain(question)
-                st.success(llm_response)
+                st.markdown(llm_response['text'])
 
         
 if __name__ == "__main__":
