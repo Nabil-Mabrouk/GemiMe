@@ -127,8 +127,7 @@ def main():
 
         full_prompt=HumanMessagePromptTemplate(
             PromptTemplate(
-                template=
-                "Provide a helpful response with relevant background information for the following: {prompt}",
+                template="Provide a helpful response with relevant background information for the following: {prompt}",
                 input_variables=["prompt"],
                 )
             )
