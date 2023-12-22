@@ -12,7 +12,7 @@ from langchain_google_genai import GoogleGenerativeAIEmbeddings
 #Tru
 from trulens_eval import TruChain, Feedback, Tru, LiteLLM
 from langchain.chains import LLMChain
-from langchain.llms import vertexai
+from langchain.llms import VertexAI
 from langchain.prompts.chat import ChatPromptTemplate, HumanMessagePromptTemplate
 from langchain.prompts import PromptTemplate
 
@@ -123,7 +123,7 @@ def main():
                     print(maxtoken_error)
     with tab_design:
         st.write("Hello")
-        llm = vertexai()
+        llm = VertexAI()
 
         full_prompt=HumanMessagePromptTemplate(
             PromptTemplate(
