@@ -110,8 +110,10 @@ def main():
             embeddings = GoogleGenerativeAIEmbeddings(model="models/embedding-001", google_api_key=st.secrets["GEMINI_API_KEY"])
             knowledge_base = FAISS.from_texts(chunks, embeddings)
             with st.form("Chat with specifications"):
-                st.header("Aska question about the document that you uploaded")
+                st.header("Ask a question about the document that you uploaded")
+                temp="You will be provided with a set of documents and a user question. Try to answer the user question by using the information contained in the documents. user question:"
                 question=st.text_input("Enter your question:")
+                question=temp+question
                 submit_button = st.form_submit_button(label="Submit")
 
                 if submit_button:
