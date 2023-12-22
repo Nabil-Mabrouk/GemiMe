@@ -123,7 +123,7 @@ def main():
                     print(maxtoken_error)
     with tab_design:
         st.write("Hello")
-        llm = VertexAI()
+        llm = GoogleGenerativeAI(model="gemini-pro", google_api_key=st.secrets["GEMINI_API_KEY"])
 
         full_prompt=HumanMessagePromptTemplate(
             prompt=PromptTemplate(
