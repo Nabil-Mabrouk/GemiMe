@@ -9,6 +9,14 @@ from langchain.embeddings.openai import OpenAIEmbeddings
 from langchain.vectorstores import FAISS
 from langchain_google_genai import GoogleGenerativeAIEmbeddings
 
+#Tru
+from trulens_eval import TruChain, Feedback, Tru, LiteLLM
+from langchain.chains import LLMChain
+from langchain.llms import vertexai
+from langchain.prompts.chat import ChatPromptTemplate, HumanMessagePromptTemplate
+
+tru = Tru()
+
 # Configure Streamlit page and state
 st.set_page_config(page_title="GemiMe", page_icon="👨‍💼")
 
@@ -112,6 +120,8 @@ def main():
                 except Exception as maxtoken_error:
                     # Fallback to the larger model if the context length is exceeded
                     print(maxtoken_error)
+    with tab_specs:
+        st.write("Hello")
 
 if __name__ == "__main__":
     main()
