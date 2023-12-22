@@ -126,7 +126,7 @@ def main():
         llm = VertexAI()
 
         full_prompt=HumanMessagePromptTemplate(
-            PromptTemplate(
+            prompt=PromptTemplate(
                 template="Provide a helpful response with relevant background information for the following: {prompt}",
                 input_variables=["prompt"],
                 )
