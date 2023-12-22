@@ -14,6 +14,7 @@ from trulens_eval import TruChain, Feedback, Tru, LiteLLM
 from langchain.chains import LLMChain
 from langchain.llms import vertexai
 from langchain.prompts.chat import ChatPromptTemplate, HumanMessagePromptTemplate
+from langchain.prompts import PromptTemplate
 
 tru = Tru()
 
@@ -120,8 +121,28 @@ def main():
                 except Exception as maxtoken_error:
                     # Fallback to the larger model if the context length is exceeded
                     print(maxtoken_error)
-    with tab_specs:
+    with tab_design:
         st.write("Hello")
+        llm = vertexai()
 
+        full_prompt=HumanMessagePromptTemplate(
+            PromptTemplate(
+                template=
+                "Provide a helpful response with relevant background information for the following: {prompt}",
+                input_variables=["prompt"],
+                )
+            )
+        chat_prompt_template = ChatPromptTemplate.from_message([full_prompt])
+        chain = LLMChain(llm=llm, prompt=chat_prompt_template, verbose=True)
+        with st.form("Test Form"):
+            st.header("Project info")
+            question=st.text_input("Enter your question:")
+            submit_button = st.form_submit_button(label="Submit", disabled="model_config" not in st.session_state)
+
+            if submit_button:
+                llm_response = chain(question)
+                st.success(llm_response)
+
+        
 if __name__ == "__main__":
     main()
